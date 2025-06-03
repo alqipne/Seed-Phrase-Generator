@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seed Phrase Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/bip39@3.0.4/dist/index.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🔐 Seed Phrase Generator (Offline)</h1>
+    <div class="buttons">
+      <button onclick="generateSeed(12)">Generate 12-word</button>
+      <button onclick="generateSeed(24)">Generate 24-word</button>
+    </div>
+    <div id="output"></div>
+    <div id="qrcode-container">
+      <div id="qrcode"></div>
+      <button id="downloadBtn" style="display:none;" onclick="downloadQRCode()">Download QR</button>
+    </div>
+  </div>
+</body>
+</html>
