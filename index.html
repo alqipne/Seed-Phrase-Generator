@@ -3,10 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <title>Seed Phrase Generator</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/bip39@3.0.4/dist/index.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-  <script defer src="script.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 30px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #0066cc;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0052a3;
+    }
+
+    #output {
+      width: 100%;
+      font-size: 16px;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+
+    #qrcode-container {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -24,5 +77,46 @@
       <button id="downloadBtn" style="display:none;" onclick="downloadQRCode()">Download QR</button>
     </div>
   </div>
+
+  <!-- BIP39 dan QR libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bip39@3.0.4/dist/index.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+
+  <script>
+    let qr;
+
+    function generateSeed(wordCount) {
+      const entropyBits = wordCount === 12 ? 128 : 256;
+      const mnemonic = bip39.generateMnemonic(entropyBits);
+      document.getElementById('output').value = mnemonic;
+      generateQRCode(mnemonic);
+    }
+
+    function generateQRCode(text) {
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = ''; // clear existing
+
+      const canvas = document.createElement('canvas');
+      qrContainer.appendChild(canvas);
+
+      qr = new QRious({
+        element: canvas,
+        value: text,
+        size: 200,
+        level: 'H'
+      });
+
+      document.getElementById('downloadBtn').style.display = 'inline-block';
+    }
+
+    function downloadQRCode() {
+      if (!qr) return alert('Generate dulu seed phrase-nya!');
+
+      const link = document.createElement('a');
+      link.download = 'seed-qr.png';
+      link.href = qr.toDataURL('image/png');
+      link.click();
+    }
+  </script>
 </body>
 </html>
