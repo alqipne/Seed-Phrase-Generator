@@ -3,14 +3,14 @@ let qr; // QRious instance
 function generateSeed(wordCount) {
   const entropyBits = wordCount === 12 ? 128 : 256;
   const mnemonic = bip39.generateMnemonic(entropyBits);
-  document.getElementById('output').innerText = mnemonic;
+  document.getElementById('output').value = mnemonic;
 
   generateQRCode(mnemonic);
 }
 
 function generateQRCode(text) {
   const qrContainer = document.getElementById('qrcode');
-  qrContainer.innerHTML = ''; // clear
+  qrContainer.innerHTML = ''; // clear existing
 
   const canvas = document.createElement('canvas');
   qrContainer.appendChild(canvas);
@@ -26,7 +26,7 @@ function generateQRCode(text) {
 }
 
 function downloadQRCode() {
-  if (!qr) return alert('Generate QR dulu dong!');
+  if (!qr) return alert('Generate dulu seed phrase-nya!');
 
   const link = document.createElement('a');
   link.download = 'seed-qr.png';
