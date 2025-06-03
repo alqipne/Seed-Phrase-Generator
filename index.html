@@ -5,116 +5,113 @@
   <title>Seed Phrase Generator</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
       margin: 0;
-      padding: 0;
     }
 
     .container {
-      max-width: 600px;
-      margin: 60px auto;
+      background: white;
       padding: 30px;
-      background-color: #ffffff;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      width: 100%;
       text-align: center;
     }
 
     h1 {
-      font-size: 24px;
-      margin-bottom: 30px;
-    }
-
-    .buttons {
       margin-bottom: 20px;
     }
 
-    button {
-      margin: 5px;
-      padding: 12px 20px;
+    textarea {
+      width: 100%;
+      height: 80px;
+      margin-top: 15px;
       font-size: 16px;
-      background-color: #0066cc;
-      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+
+    button {
+      padding: 10px 18px;
+      margin: 5px;
+      font-size: 16px;
       border: none;
+      background-color: #007bff;
+      color: white;
       border-radius: 8px;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #0052a3;
+      background-color: #0056b3;
     }
 
-    #output {
-      width: 100%;
-      font-size: 16px;
-      padding: 12px;
-      margin-top: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      resize: vertical;
-      box-sizing: border-box;
-    }
-
-    #qrcode-container {
+    #qrcode {
       margin-top: 20px;
+    }
+
+    #downloadBtn {
+      display: none;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>🔐 Seed Phrase Generator</h1>
+    <button onclick="generateSeed(12)">Generate 12-word</button>
+    <button onclick="generateSeed(24)">Generate 24-word</button>
 
-    <div class="buttons">
-      <button onclick="generateSeed(12)">Generate 12-word</button>
-      <button onclick="generateSeed(24)">Generate 24-word</button>
-    </div>
+    <textarea id="output" placeholder="Seed phrase akan muncul di sini..."></textarea>
 
-    <textarea id="output" rows="4" placeholder="Seed phrase akan muncul di sini..."></textarea>
-
-    <div id="qrcode-container">
-      <div id="qrcode"></div>
-      <button id="downloadBtn" style="display:none;" onclick="downloadQRCode()">Download QR</button>
-    </div>
+    <div id="qrcode"></div>
+    <button id="downloadBtn" onclick="downloadQRCode()">Download QR</button>
   </div>
 
-  <!-- BIP39 dan QR libraries -->
+  <!-- BIP39 dan QRious Libraries -->
   <script src="https://cdn.jsdelivr.net/npm/bip39@3.0.4/dist/index.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
 
   <script>
-    let qr;
+    let qrInstance;
 
     function generateSeed(wordCount) {
-      const entropyBits = wordCount === 12 ? 128 : 256;
-      const mnemonic = bip39.generateMnemonic(entropyBits);
-      document.getElementById('output').value = mnemonic;
-      generateQRCode(mnemonic);
+      const entropy = wordCount === 24 ? 256 : 128;
+      const seed = bip39.generateMnemonic(entropy);
+      document.getElementById("output").value = seed;
+      generateQRCode(seed);
     }
 
     function generateQRCode(text) {
-      const qrContainer = document.getElementById('qrcode');
-      qrContainer.innerHTML = ''; // clear existing
+      const qrDiv = document.getElementById("qrcode");
+      qrDiv.innerHTML = ""; // reset QR
 
-      const canvas = document.createElement('canvas');
-      qrContainer.appendChild(canvas);
+      const canvas = document.createElement("canvas");
+      qrDiv.appendChild(canvas);
 
-      qr = new QRious({
+      qrInstance = new QRious({
         element: canvas,
         value: text,
         size: 200,
-        level: 'H'
+        level: "H"
       });
 
-      document.getElementById('downloadBtn').style.display = 'inline-block';
+      document.getElementById("downloadBtn").style.display = "inline-block";
     }
 
     function downloadQRCode() {
-      if (!qr) return alert('Generate dulu seed phrase-nya!');
-
-      const link = document.createElement('a');
-      link.download = 'seed-qr.png';
-      link.href = qr.toDataURL('image/png');
+      if (!qrInstance) return;
+      const link = document.createElement("a");
+      link.download = "seed-qr.png";
+      link.href = qrInstance.toDataURL("image/png");
       link.click();
     }
   </script>
