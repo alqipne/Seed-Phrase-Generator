@@ -10,12 +10,15 @@
 </head>
 <body>
   <div class="container">
-    <h1>🔐 Seed Phrase Generator (Offline)</h1>
+    <h1>🔐 Seed Phrase Generator</h1>
+
     <div class="buttons">
       <button onclick="generateSeed(12)">Generate 12-word</button>
       <button onclick="generateSeed(24)">Generate 24-word</button>
     </div>
-    <div id="output"></div>
+
+    <textarea id="output" rows="4" placeholder="Seed phrase akan muncul di sini..."></textarea>
+
     <div id="qrcode-container">
       <div id="qrcode"></div>
       <button id="downloadBtn" style="display:none;" onclick="downloadQRCode()">Download QR</button>
