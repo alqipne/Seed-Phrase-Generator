@@ -1,104 +1,28 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Seed Phrase Generator + QR Code</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background: #f9f9f9;
-      text-align: center;
-    }
-    button {
-      font-size: 16px;
-      margin: 10px;
-      padding: 12px 20px;
-      border-radius: 8px;
-      border: none;
-      background-color: #2a9df4;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0c7cd5;
-    }
-    textarea {
-      width: 90%;
-      height: 80px;
-      margin-top: 15px;
-      font-size: 16px;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      resize: vertical;
-    }
-    #qrcode {
-      margin-top: 20px;
-    }
-    #downloadBtn {
-      display: none;
-      margin-top: 15px;
-      padding: 10px 18px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      background-color: #28a745;
-      color: white;
-      cursor: pointer;
-    }
-    #downloadBtn:hover {
-      background-color: #1e7e34;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Bitcoin Wallet Generator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/bitcoinjs-lib@6.1.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 </head>
 <body>
-  <h1>Seed Phrase Generator BIP39</h1>
-  <button onclick="generateSeed(12)">Generate 12 kata</button>
-  <button onclick="generateSeed(24)">Generate 24 kata</button>
+  <div class="container">
+    <h2>Bitcoin Wallet Generator</h2>
+    <button onclick="generate()">Generate Wallet</button>
 
-  <textarea id="seedOutput" placeholder="Seed phrase muncul di sini..." readonly></textarea>
+    <div class="output">
+      <p><strong>Address:</strong> <span id="address"></span></p>
+      <canvas id="qrAddress"></canvas><br>
+      <button onclick="downloadQR('qrAddress', 'btc-address')">Download Address QR</button>
 
-  <div id="qrcode"></div>
-  <button id="downloadBtn" onclick="downloadQR()">Download QR Code</button>
+      <p><strong>Private Key (WIF):</strong> <span id="privkey"></span></p>
+      <canvas id="qrPrivkey"></canvas><br>
+      <button onclick="downloadQR('qrPrivkey', 'btc-private-key')">Download Private Key QR</button>
+    </div>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bip39@3.0.4/dist/index.browser.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-
-  <script>
-    let qr;
-
-    function generateSeed(wordsCount) {
-      let entropyBits = wordsCount === 24 ? 256 : 128;
-      const mnemonic = bip39.generateMnemonic(entropyBits);
-      document.getElementById('seedOutput').value = mnemonic;
-
-      generateQRCode(mnemonic);
-    }
-
-    function generateQRCode(text) {
-      const qrDiv = document.getElementById('qrcode');
-      qrDiv.innerHTML = '';
-      const canvas = document.createElement('canvas');
-      qrDiv.appendChild(canvas);
-
-      qr = new QRious({
-        element: canvas,
-        value: text,
-        size: 200,
-        level: 'H'
-      });
-
-      document.getElementById('downloadBtn').style.display = 'inline-block';
-    }
-
-    function downloadQR() {
-      if (!qr) return;
-      const link = document.createElement('a');
-      link.href = qr.toDataURL('image/png');
-      link.download = 'seedphrase-qr.png';
-      link.click();
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
